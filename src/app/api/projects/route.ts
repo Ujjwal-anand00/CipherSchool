@@ -18,7 +18,9 @@ export async function POST(request: NextRequest) {
     if (!session || !session.user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+    const user = session.user as { id: string; name?: string; email?: string; image?: string };
+    const userId = user.id;
+
 
     const body = await request.json();
 
@@ -47,7 +49,9 @@ export async function GET() {
     if (!session || !session.user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+    const user = session.user as { id: string; name?: string; email?: string; image?: string };
+    const userId = user.id;
+
 
     const projects = await Project.find({ user: userId }).sort({
       updatedAt: -1,

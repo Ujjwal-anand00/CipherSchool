@@ -22,7 +22,8 @@ export async function GET(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const { id } = await context.params; 
-    const userId = session.user.id;
+    const user = session.user as { id: string; name?: string; email?: string; image?: string };
+    const userId = user.id;
 
     
     const project = await Project.findOne({ _id: id, user: userId });
@@ -46,7 +47,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   try {
@@ -55,8 +56,10 @@ export async function PUT(
     if (!session || !session.user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
-    const { id } = params;
+    
+    const { id } = await context.params;
+    const user = session.user as { id: string; name?: string; email?: string; image?: string };
+    const userId = user.id;
     const body = await request.json();
 
     
@@ -86,7 +89,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   try {
@@ -95,8 +98,10 @@ export async function DELETE(
     if (!session || !session.user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
-    const { id } = params;
+    
+    const { id } = await context.params;
+    const user = session.user as { id: string; name?: string; email?: string; image?: string };
+    const userId = user.id;
 
    
     const deletedProject = await Project.findOneAndDelete({
